@@ -1,0 +1,448 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>{{ project_title }} | Vprotech Digital</title>
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@500;700;900&family=Share+Tech+Mono&family=Rajdhani:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+<link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+
+<canvas id="particle-canvas"></canvas>
+
+<!-- ============ LOADING SCREEN ============ -->
+<div id="loading-screen">
+  <div class="loader-core">
+    <div class="loader-ring"></div>
+    <div class="loader-ring ring2"></div>
+    <div class="loader-ring ring3"></div>
+    <i class="fa-solid fa-shield-halved loader-icon"></i>
+  </div>
+  <p class="loader-text">INITIALIZING SECURE ENVIRONMENT<span class="dots">...</span></p>
+</div>
+
+<!-- ============ TOP NAV ============ -->
+<nav class="navbar navbar-expand-lg cyber-navbar fixed-top">
+  <div class="container-fluid px-4">
+    <!-- <a class="navbar-brand cyber-brand" href="#landing">
+      <i class="fa-solid fa-fingerprint brand-icon"></i> VPROTECH<span class="brand-accent">DIGITAL</span>
+    </a> -->
+    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navMenu">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse" id="navMenu">
+      <ul class="navbar-nav ms-auto align-items-lg-center gap-lg-2">
+        <li class="nav-item"><a class="nav-link" href="#dashboard">Dashboard</a></li>
+        <li class="nav-item"><a class="nav-link" href="#generator">Generator</a></li>
+        <li class="nav-item"><a class="nav-link" href="#history">History</a></li>
+        <li class="nav-item"><a class="nav-link" href="#about">About</a></li>
+        <li class="nav-item"><a class="nav-link" href="#help">Help</a></li>
+        <li class="nav-item">
+          <button id="theme-toggle" class="btn btn-icon-toggle" title="Toggle Light / Dark Mode">
+            <i class="fa-solid fa-moon"></i>
+          </button>
+        </li>
+      </ul>
+    </div>
+  </div>
+</nav>
+
+<!-- ============ LANDING SECTION ============ -->
+<section id="landing" class="landing-section">
+  <div class="container text-center position-relative z-1">
+    <div class="landing-badge" data-aos="fade-down">
+      <i class="fa-solid fa-lock"></i> {{ training_name }}
+    </div>
+    <h1 class="landing-title" data-aos="fade-up">
+      Advanced Password Strength <span class="gradient-text">&amp; Breach Detection</span> System
+    </h1>
+    <p class="landing-subtitle" data-aos="fade-up" data-aos-delay="100">
+      A fully offline, real-time cyber security analysis platform — entropy modeling,
+      pattern detection, local breach intelligence &amp; secure password generation.
+    </p>
+
+    <div class="landing-meta" data-aos="fade-up" data-aos-delay="200">
+      <div class="meta-card">
+        <i class="fa-solid fa-user-shield"></i>
+        <span class="meta-label">Student</span>
+        <span class="meta-value">{{ student_name }}</span>
+      </div>
+      <div class="meta-card">
+        <i class="fa-solid fa-graduation-cap"></i>
+        <span class="meta-label">Training</span>
+        <span class="meta-value">{{ training_name }}</span>
+      </div>
+      <div class="meta-card">
+        <i class="fa-solid fa-user-tie"></i>
+        <span class="meta-label">Guide</span>
+        <span class="meta-value">{{ guide_name }}</span>
+      </div>
+      <div class="meta-card">
+        <i class="fa-solid fa-database"></i>
+        <span class="meta-label">Local Dataset</span>
+        <span class="meta-value">{{ dataset_size }}+ entries</span>
+      </div>
+    </div>
+
+    <a href="#dashboard" class="btn cyber-btn-primary btn-lg mt-4" data-aos="zoom-in" data-aos-delay="300">
+      <i class="fa-solid fa-rocket"></i> Launch Dashboard
+    </a>
+
+    <div class="scroll-hint"><i class="fa-solid fa-chevron-down"></i></div>
+  </div>
+</section>
+
+<!-- ============ DASHBOARD SECTION ============ -->
+<section id="dashboard" class="section-block">
+  <div class="container">
+    <h2 class="section-title" data-aos="fade-up"><i class="fa-solid fa-gauge-high"></i> Live Security Dashboard</h2>
+    <p class="section-subtitle" data-aos="fade-up">Type a password below. Everything updates in real time — nothing leaves your machine.</p>
+
+    <div class="row g-4">
+      <!-- Input & core cards -->
+      <div class="col-lg-7" data-aos="fade-right">
+        <div class="glass-card p-4">
+          <label class="form-label cyber-label"><i class="fa-solid fa-key"></i> Enter Password to Analyze</label>
+          <div class="input-group password-input-group">
+            <input type="password" id="passwordInput" class="form-control cyber-input" placeholder="Type a password..." autocomplete="off">
+            <button class="btn btn-icon-toggle" id="togglePasswordVisibility" title="Show / Hide"><i class="fa-solid fa-eye"></i></button>
+            <button class="btn btn-icon-toggle" id="copyInputBtn" title="Copy"><i class="fa-solid fa-copy"></i></button>
+          </div>
+
+          <div class="strength-meter-wrap mt-3">
+            <div class="d-flex justify-content-between">
+              <span class="strength-label-text" id="strengthLabel">Very Weak</span>
+              <span class="strength-score-text" id="scoreLabel">0 / 100</span>
+            </div>
+            <div class="strength-bar-track">
+              <div class="strength-bar-fill" id="strengthBarFill"></div>
+            </div>
+          </div>
+
+          <div class="row g-3 mt-1">
+            <div class="col-6 col-md-3"><div class="mini-stat"><span class="mini-num" id="statLength">0</span><span class="mini-label">Length</span></div></div>
+            <div class="col-6 col-md-3"><div class="mini-stat"><span class="mini-num" id="statUpper">0</span><span class="mini-label">Uppercase</span></div></div>
+            <div class="col-6 col-md-3"><div class="mini-stat"><span class="mini-num" id="statLower">0</span><span class="mini-label">Lowercase</span></div></div>
+            <div class="col-6 col-md-3"><div class="mini-stat"><span class="mini-num" id="statNumber">0</span><span class="mini-label">Numbers</span></div></div>
+            <div class="col-6 col-md-3"><div class="mini-stat"><span class="mini-num" id="statSpecial">0</span><span class="mini-label">Special</span></div></div>
+            <div class="col-6 col-md-3"><div class="mini-stat"><span class="mini-num" id="statUnique">0</span><span class="mini-label">Unique</span></div></div>
+            <div class="col-6 col-md-3"><div class="mini-stat"><span class="mini-num" id="statRepeated">0</span><span class="mini-label">Repeated</span></div></div>
+            <div class="col-6 col-md-3"><div class="mini-stat"><span class="mini-num" id="statEntropy">0</span><span class="mini-label">Entropy (bits)</span></div></div>
+          </div>
+
+          <div class="pattern-flags mt-3" id="patternFlags"></div>
+        </div>
+
+        <!-- Breach card -->
+        <div class="glass-card p-4 mt-4" id="breachCard">
+          <label class="form-label cyber-label"><i class="fa-solid fa-triangle-exclamation"></i> Breach Detection (Offline Local Dataset)</label>
+          <div id="breachResult" class="breach-result-box breach-neutral">
+            <i class="fa-solid fa-circle-info"></i>
+            <span>Start typing a password to check the local offline dataset.</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Gauges & charts -->
+      <div class="col-lg-5" data-aos="fade-left">
+        <div class="glass-card p-4 text-center">
+          <label class="form-label cyber-label"><i class="fa-solid fa-gauge"></i> Security Gauge</label>
+          <svg id="gaugeSvg" viewBox="0 0 220 140" class="gauge-svg">
+            <path d="M20,120 A90,90 0 0,1 200,120" fill="none" stroke="rgba(255,255,255,0.08)" stroke-width="16" stroke-linecap="round"/>
+            <path id="gaugeArc" d="M20,120 A90,90 0 0,1 200,120" fill="none" stroke="url(#gaugeGradient)" stroke-width="16" stroke-linecap="round" stroke-dasharray="283" stroke-dashoffset="283"/>
+            <defs>
+              <linearGradient id="gaugeGradient" x1="0%" y1="0%" x2="100%" y2="0%">
+                <stop offset="0%" stop-color="#ff3860"/>
+                <stop offset="50%" stop-color="#ffd23f"/>
+                <stop offset="100%" stop-color="#00e08f"/>
+              </linearGradient>
+            </defs>
+            <text x="110" y="105" text-anchor="middle" class="gauge-number" id="gaugeNumber">0</text>
+          </svg>
+          <div class="crack-time-box mt-2">
+            <i class="fa-solid fa-clock"></i> Estimated Crack Time
+            <div class="crack-time-value" id="crackTimeValue">Less than 1 second</div>
+          </div>
+        </div>
+
+        <!-- <div class="glass-card p-4 mt-4">
+          <label class="form-label cyber-label"><i class="fa-solid fa-chart-pie"></i> Password Composition</label>
+          <canvas id="compositionChart" height="180"></canvas>
+        </div> -->
+
+<div class="glass-card p-4 mt-4">
+    <label class="form-label cyber-label">
+        <i class="fa-solid fa-chart-pie"></i> Password Composition
+    </label>
+
+    <video 
+        class="attack-video"
+        autoplay 
+        muted 
+        loop 
+        playsinline>
+        <source src="{{ url_for('static', filename='videos/attack_simulation.mp4') }}" type="video/mp4">
+    </video>
+</div>
+
+
+        <div class="glass-card p-4 mt-4">
+          <label class="form-label cyber-label"><i class="fa-solid fa-lightbulb"></i> Security Suggestions</label>
+          <ul class="suggestions-list" id="suggestionsList">
+            <li>Start typing to get personalized suggestions.</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <div class="text-center mt-4" data-aos="fade-up">
+      <button class="btn cyber-btn-outline" id="exportPdfBtn"><i class="fa-solid fa-file-pdf"></i> Export PDF Report</button>
+    </div>
+  </div>
+</section>
+
+<!-- ============ GENERATOR SECTION ============ -->
+<section id="generator" class="section-block alt-bg">
+  <div class="container">
+    <h2 class="section-title" data-aos="fade-up"><i class="fa-solid fa-dice"></i> Secure Password Generator</h2>
+    <p class="section-subtitle" data-aos="fade-up">Cryptographically secure generation using Python's <code>secrets</code> module.</p>
+
+    <div class="row g-4">
+      <div class="col-lg-6" data-aos="fade-right">
+        <div class="glass-card p-4">
+          <label class="form-label cyber-label">Password Length: <span id="lengthValue">16</span></label>
+          <div class="length-options mb-3" id="lengthOptions">
+            <button class="length-btn" data-len="8">8</button>
+            <button class="length-btn" data-len="12">12</button>
+            <button class="length-btn active" data-len="16">16</button>
+            <button class="length-btn" data-len="20">20</button>
+            <button class="length-btn" data-len="24">24</button>
+            <button class="length-btn" data-len="32">32</button>
+          </div>
+
+          <div class="row row-cols-2 g-2 mb-2">
+            <div class="col"><label class="cyber-check"><input type="checkbox" id="optUpper" checked><span>Uppercase (A-Z)</span></label></div>
+            <div class="col"><label class="cyber-check"><input type="checkbox" id="optLower" checked><span>Lowercase (a-z)</span></label></div>
+            <div class="col"><label class="cyber-check"><input type="checkbox" id="optNumbers" checked><span>Numbers (0-9)</span></label></div>
+            <div class="col"><label class="cyber-check"><input type="checkbox" id="optSymbols" checked><span>Symbols (!@#$)</span></label></div>
+            <div class="col"><label class="cyber-check"><input type="checkbox" id="optExcludeSimilar"><span>Exclude Similar (l,1,I,O,0)</span></label></div>
+            <div class="col"><label class="cyber-check"><input type="checkbox" id="optExcludeAmbiguous"><span>Exclude Ambiguous Symbols</span></label></div>
+          </div>
+
+          <div class="d-flex gap-2 mt-3 flex-wrap">
+            <button class="btn cyber-btn-primary" id="generateBtn"><i class="fa-solid fa-bolt"></i> Generate</button>
+            <button class="btn cyber-btn-outline" id="regenerateBtn"><i class="fa-solid fa-rotate"></i> Regenerate</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="col-lg-6" data-aos="fade-left">
+        <div class="glass-card p-4 h-100 d-flex flex-column">
+          <label class="form-label cyber-label"><i class="fa-solid fa-lock"></i> Generated Password</label>
+          <div class="input-group password-input-group">
+            <input type="text" id="generatedPasswordOutput" class="form-control cyber-input generated-output" readonly placeholder="Click Generate...">
+            <button class="btn btn-icon-toggle" id="copyGeneratedBtn" title="Copy"><i class="fa-solid fa-copy"></i></button>
+          </div>
+          <div class="mt-3">
+            <span class="badge-strength" id="generatedStrengthBadge">—</span>
+          </div>
+          <div class="mt-auto pt-3">
+            <div class="tip-box">
+              <i class="fa-solid fa-shield-heart"></i>
+              <span id="cyberTipText">Loading a cyber security tip...</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ HISTORY SECTION ============ -->
+<section id="history" class="section-block">
+  <div class="container">
+    <h2 class="section-title" data-aos="fade-up"><i class="fa-solid fa-clock-rotate-left"></i> Password Check History</h2>
+    <p class="section-subtitle" data-aos="fade-up">Stored only in this browser session — cleared automatically on refresh. No data ever leaves your machine.</p>
+
+    <div class="glass-card p-3" data-aos="fade-up">
+      <div class="table-responsive">
+        <table class="table cyber-table mb-0">
+          <thead>
+            <tr><th>#</th><th>Time</th><th>Strength</th><th>Score</th><th>Breach Status</th></tr>
+          </thead>
+          <tbody id="historyTableBody">
+            <tr><td colspan="5" class="text-center text-muted">No passwords checked yet in this session.</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ ABOUT / HELP / CONTACT ============ -->
+<!-- ============ ABOUT / HELP / CONTACT ============ -->
+<section id="about" class="section-block alt-bg">
+  <div class="container">
+
+    <div class="text-center mb-5">
+      <span class="landing-badge">
+        <i class="fa-solid fa-shield-halved"></i> Project Information
+      </span>
+
+      <h2 class="section-title mt-3">
+        About This <span class="gradient-text">Cyber Security</span> Project
+      </h2>
+
+      <p class="section-subtitle">
+        An advanced offline password security analysis platform featuring
+        strength evaluation, breach detection, entropy analysis, and secure
+        password generation.
+      </p>
+    </div>
+
+    <div class="row g-4">
+
+      <!-- About -->
+      <div class="col-lg-4" data-aos="fade-up">
+        <div class="glass-card p-4 h-100">
+
+          <div class="feature-icon mb-3">
+            <i class="fa-solid fa-shield-halved"></i>
+          </div>
+
+          <h4 class="mb-3">About Project</h4>
+
+          <p class="text-muted">
+            This application performs advanced password strength analysis
+            completely offline. It evaluates entropy, detects common attack
+            patterns, checks passwords against a local breach dataset, and
+            provides actionable security recommendations.
+          </p>
+
+          <hr>
+
+          <div class="d-flex justify-content-between mb-2">
+            <span>Student</span>
+            <strong>{{ student_name }}</strong>
+          </div>
+
+          <div class="d-flex justify-content-between mb-2">
+            <span>Training</span>
+            <strong>{{ training_name }}</strong>
+          </div>
+
+          <div class="d-flex justify-content-between">
+            <span>Guide</span>
+            <strong>{{ guide_name }}</strong>
+          </div>
+
+        </div>
+      </div>
+
+      <!-- Features -->
+      <div class="col-lg-4" data-aos="fade-up" data-aos-delay="150">
+        <div class="glass-card p-4 h-100">
+
+          <div class="feature-icon mb-3">
+            <i class="fa-solid fa-microchip"></i>
+          </div>
+
+          <h4 class="mb-3">Project Features</h4>
+
+          <ul class="list-unstyled">
+
+            <li class="mb-3">
+              <i class="fa-solid fa-circle-check text-success me-2"></i>
+              Real-time Password Strength Analysis
+            </li>
+
+            <li class="mb-3">
+              <i class="fa-solid fa-circle-check text-success me-2"></i>
+              Offline Breach Detection
+            </li>
+
+            <li class="mb-3">
+              <i class="fa-solid fa-circle-check text-success me-2"></i>
+              Entropy & Pattern Analysis
+            </li>
+
+            <li class="mb-3">
+              <i class="fa-solid fa-circle-check text-success me-2"></i>
+              Secure Password Generator
+            </li>
+
+            <li>
+              <i class="fa-solid fa-circle-check text-success me-2"></i>
+              PDF Report Export
+            </li>
+
+          </ul>
+
+        </div>
+      </div>
+
+      <!-- Help -->
+      <div class="col-lg-4" data-aos="fade-up" data-aos-delay="300">
+        <div class="glass-card p-4 h-100">
+
+          <div class="feature-icon mb-3">
+            <i class="fa-solid fa-headset"></i>
+          </div>
+
+          <h4 class="mb-3">Quick Guide</h4>
+
+          <div class="mb-3">
+            <strong>Step 1</strong>
+            <p class="text-muted mb-0">
+              Enter a password in the dashboard.
+            </p>
+          </div>
+
+          <div class="mb-3">
+            <strong>Step 2</strong>
+            <p class="text-muted mb-0">
+              Review the strength score and breach status.
+            </p>
+          </div>
+
+          <div class="mb-3">
+            <strong>Step 3</strong>
+            <p class="text-muted mb-0">
+              Generate a stronger password if required.
+            </p>
+          </div>
+
+          <div class="alert alert-success mt-4 mb-0">
+            <i class="fa-solid fa-lock me-2"></i>
+            <strong>100% Offline</strong><br>
+            No passwords are uploaded or stored online.
+          </div>
+
+        </div>
+      </div>
+
+    </div>
+
+  </div>
+</section>
+
+<footer class="cyber-footer">
+  <div class="container text-center">
+    <p class="mb-1"><i class="fa-solid fa-shield-halved"></i> {{ project_title }}</p>
+    <p class="mb-0 text-muted small">Built by {{ student_name }} — {{ training_name }} — Vprotech Digital © 2026</p>
+  </div>
+</footer>
+
+<div id="toastContainer" class="toast-container-custom"></div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/aos/2.3.1/aos.js"></script>
+<script src="{{ url_for('static', filename='js/particles.js') }}"></script>
+<script src="{{ url_for('static', filename='js/script.js') }}"></script>
+</body>
+</html>
